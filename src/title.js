@@ -112,7 +112,6 @@ export class Title {
     rectOutline(12, 16, SCREEN_W - 24, 38, 3);
     textCenter('GORILLA', 24, 0);
     textCenter('LAND', 36, 0);
-    text('TM NOT', 132, 46, 0); // wink: decidedly not a trademark
     blit(SPR.bruno_walk1, 30, 62);
     blit(SPR.pip_walk1, 104, 66, true);
     blit(SPR.banana, 78, 70);

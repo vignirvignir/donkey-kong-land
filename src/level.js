@@ -424,14 +424,19 @@ export class Level {
   }
 
   drawBackdrop(cam) {
-    // horizon band silhouettes; cheap parallax at half speed
+    // cheap half-speed parallax
     const off = Math.floor(cam.x / 2) % 32;
     if (this.flooded) {
-      for (let y = 8; y < SCREEN_H; y += 24)
-        for (let x = -off; x < SCREEN_W; x += 32) blit(SPR.splash, x, y + ((x / 32) % 2 ? 6 : 0));
+      // sparse drifting plankton specks
+      for (let i = 0; i < 14; i++) {
+        const x = ((i * 47 + 13 - off * 2) % (SCREEN_W + 16)) - 8;
+        const y = 14 + ((i * 37 + Math.floor(this.frame / 8) * (i % 3 === 0 ? 1 : 0)) % (SCREEN_H - 24));
+        fillRect(x, y, 1, 1, 1);
+      }
       return;
     }
-    const bandY = SCREEN_H - 52 - Math.floor(cam.y / 3) % 20;
+    // distant hill dashes pinned to the lower third
+    const bandY = SCREEN_H - 38;
     for (let x = -off; x < SCREEN_W + 32; x += 32) {
       fillRect(x, bandY, 18, 2, 1);
       fillRect(x + 8, bandY - 4, 10, 2, 1);
