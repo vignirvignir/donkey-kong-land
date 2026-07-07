@@ -293,6 +293,16 @@ export class Game {
         if (g.screen instanceof Level) return !!g.screen.spawnChar(ch, tileX * 16, tileY * 16);
         return false;
       },
+      // tile physics class at tile coords: 0 empty, 1 solid, 2 platform,
+      // 3 rope, 4 spike, 5 water, 6 cracked; -1 when not in a level
+      tile(tx, ty) {
+        if (g.screen instanceof Level) return g.screen.tileClassAt(tx, ty);
+        return -1;
+      },
+      dims() {
+        if (g.screen instanceof Level) return { W: g.screen.W, H: g.screen.H };
+        return null;
+      },
       levels() { return Object.keys(LEVELS); },
       worlds() { return WORLDS.map(w => ({ name: w.name, stages: w.stages.map(s => s.id) })); },
       audio: { booted: () => audioBooted(), playing: () => musicPlaying() },

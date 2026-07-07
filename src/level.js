@@ -489,9 +489,14 @@ export class Level {
       },
       letters: [...this.lettersHere],
       boss: this.boss && this.boss.alive ? { type: this.boss.type, hp: this.boss.hp, state: this.boss.state, stompable: this.boss.stompable, deadly: this.boss.deadly, open: this.boss.open, dir: this.boss.dir, x: +this.boss.x.toFixed(1), y: +this.boss.y.toFixed(1) } : null,
-      entities: this.entities.filter(e => e.alive && !e.invisible && e.kind !== 'fx')
-        .slice(0, 80)
-        .map(e => ({ t: e.type, k: e.kind, x: Math.round(e.x), y: Math.round(e.y) })),
+      entities: this.entities.filter(e => e.alive && e.kind !== 'fx')
+        .slice(0, 120)
+        .map(e => ({
+          t: e.type, k: e.kind, x: Math.round(e.x), y: Math.round(e.y),
+          ...(e.letter ? { l: e.letter } : {}),
+          ...(e.invisible ? { hidden: 1 } : {}),
+          ...(e.type === 'bonus' ? { i: e.index } : {}),
+        })),
       cam: { x: Math.round(this.cam.x), y: Math.round(this.cam.y) },
       size: { w: this.pxWidth, h: this.pxHeight },
     };
