@@ -238,12 +238,12 @@ export class Game {
     const rec = this.run.progress[id] || (this.run.progress[id] = { cleared: false, bonus: [] });
     rec.cleared = true;
     this.saveNow();
-    stopMusic();
-    playMusic('victory', SONGS.victory);
-    const t = new Title(this);
+    const t = new Title(this); // ctor starts title music…
     t.mode = 'victory';
     t.t = 0;
     this.screen = t;
+    stopMusic();               // …so cue the victory jingle after
+    playMusic('victory', SONGS.victory);
   }
 
   // ---------- verification hooks ----------
