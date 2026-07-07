@@ -208,7 +208,9 @@ export class Player {
       this.carrying.x = this.cx - this.carrying.w / 2;
       this.carrying.y = this.y - this.carrying.h + 2;
     }
-    this.state = this.grounded ? 'ground' : 'air';
+    if (this.state !== 'dead' && this.state !== 'cannon' && this.state !== 'climb') {
+      this.state = this.grounded ? 'ground' : 'air';
+    }
   }
 
   updateRoll() {
@@ -230,7 +232,7 @@ export class Player {
       sfx.jump();
       return;
     }
-    if (this.rollT <= 0 || Math.abs(this.vx) < 0.2) {
+    if (this.state !== 'dead' && (this.rollT <= 0 || Math.abs(this.vx) < 0.2)) {
       this.state = this.grounded ? 'ground' : 'air';
       this.rollCd = PHYS.rollCooldown;
     }
@@ -276,6 +278,7 @@ export class Player {
     if (this.vy > PHYS.swimMaxSink) this.vy = PHYS.swimMaxSink;
     if (this.vy < -PHYS.swimMaxRise) this.vy = -PHYS.swimMaxRise;
     this.moveAndCollide();
+    if (this.state === 'dead') return;
     this.state = 'swim';
     if (this.grounded && !this.lv.flooded) {
       // stand up in shallow water

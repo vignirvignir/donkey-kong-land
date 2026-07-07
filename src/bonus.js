@@ -34,8 +34,10 @@ export class BonusGame {
     this.t++;
     const run = this.game.run;
     if (this.state === 'ask') {
-      if (input.pressed(BTN.A) && run.medals > 0) this.startSpin();
-      if (input.pressed(BTN.B) || input.pressed(BTN.START) || run.medals <= 0 && input.pressed(BTN.A)) {
+      if (input.pressed(BTN.A)) {
+        if (run.medals > 0) this.startSpin();
+        else this.state = 'done';
+      } else if (input.pressed(BTN.B) || input.pressed(BTN.START)) {
         this.state = 'done';
       }
       return;
