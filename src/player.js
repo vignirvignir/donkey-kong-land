@@ -57,7 +57,7 @@ export class Player {
 
   hurt() {
     if (this.invuln > 0 || this.state === 'dead') return;
-    if (this.riding) { this.riding.fleeFromHit(); return; }
+    if (this.riding) { this.riding.takeHit(this.lv); return; }
     const run = this.lv.game.run;
     if (this.carrying) this.dropBarrel();
     if (run.heroesAlive >= 2) {

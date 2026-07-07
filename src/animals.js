@@ -16,11 +16,12 @@ export function makeAnimal(name, x, y) {
   return {
     kind: 'animal', type: name, x, y, w: P.w, h: P.h,
     vx: 0, vy: 0, dir: 1, t: 0, alive: true, grounded: false,
-    mounted: false, fleeing: false, charging: false, invuln: 0,
+    mounted: false, fleeing: false, charging: false, invuln: 0, remountCd: 0,
 
     update(lv) {
       this.t++;
       if (this.invuln > 0) this.invuln--;
+      if (this.remountCd > 0) this.remountCd--;
       if (this.mounted) return; // controlled via control()
       // idle / fleeing animal
       this.vy = Math.min(this.vy + PHYS.gravity, PHYS.maxFall);
@@ -29,7 +30,7 @@ export function makeAnimal(name, x, y) {
       this.move(lv);
       if (this.fleeing && (this.x < -40 || this.x > lv.pxWidth + 40)) this.alive = false;
       // mount on touch
-      if (!this.fleeing && lv.player.riding == null && lv.player.state !== 'dead' &&
+      if (!this.fleeing && this.remountCd === 0 && lv.player.riding == null && lv.player.state !== 'dead' &&
           overlap(this, lv.player)) {
         this.mounted = true;
         lv.player.riding = this;
@@ -77,20 +78,12 @@ export function makeAnimal(name, x, y) {
 
     dismount(p) {
       this.mounted = false;
+      this.remountCd = 45;
       p.riding = null;
       p.vy = -2.5;
       p.state = 'air';
       p.invuln = Math.max(p.invuln, 20);
       sfx.select();
-    },
-
-    fleeFromHit() {
-      // animal takes the hit and runs away
-      const p = this.mountedPlayer;
-      this.mounted = false;
-      this.fleeing = true;
-      this.invuln = 60;
-      sfx.hurt();
     },
 
     takeHit(lv) {

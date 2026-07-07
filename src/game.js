@@ -289,6 +289,10 @@ export class Game {
         return g.snapshot();
       },
       unlockAll(v = true) { g.testUnlockAll = v; },
+      spawn(ch, tileX, tileY) {
+        if (g.screen instanceof Level) return !!g.screen.spawnChar(ch, tileX * 16, tileY * 16);
+        return false;
+      },
       levels() { return Object.keys(LEVELS); },
       worlds() { return WORLDS.map(w => ({ name: w.name, stages: w.stages.map(s => s.id) })); },
       audio: { booted: () => audioBooted(), playing: () => musicPlaying() },

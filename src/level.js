@@ -54,15 +54,8 @@ export class Level {
           this.tileChar[y * this.W + x] = ch;
         } else if (ch === 'S') {
           this.startPos = { x: px + 2, y: py };
-        } else if (ITEM_FACTORIES[ch]) {
-          const e = ITEM_FACTORIES[ch](px, py);
-          this.entities.push(e);
-        } else if (ENEMY_FACTORIES[ch]) {
-          this.entities.push(ENEMY_FACTORIES[ch](px, py, this));
-        } else if (HAZARD_FACTORIES[ch]) {
-          this.entities.push(HAZARD_FACTORIES[ch](px, py));
-        } else if (PLATFORM_FACTORIES[ch]) {
-          this.entities.push(PLATFORM_FACTORIES[ch](px, py));
+        } else {
+          this.spawnChar(ch, px, py);
         }
       }
     }
@@ -147,6 +140,16 @@ export class Level {
   }
   spawnAnimal(name, x, y) {
     this.addEntity(makeAnimal(name, x, y));
+  }
+  // spawn any map-char entity at pixel coords (used by the parser and tests)
+  spawnChar(ch, px, py) {
+    let e = null;
+    if (ITEM_FACTORIES[ch]) e = ITEM_FACTORIES[ch](px, py);
+    else if (ENEMY_FACTORIES[ch]) e = ENEMY_FACTORIES[ch](px, py, this);
+    else if (HAZARD_FACTORIES[ch]) e = HAZARD_FACTORIES[ch](px, py);
+    else if (PLATFORM_FACTORIES[ch]) e = PLATFORM_FACTORIES[ch](px, py);
+    if (e) this.entities.push(e);
+    return e;
   }
   addEntity(e) { this.entities.push(e); }
   barrelNear(p) {

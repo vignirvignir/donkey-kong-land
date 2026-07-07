@@ -65,9 +65,9 @@ export const ITEM_FACTORIES = {
   T: (x, y) => throwableBarrel(x, y, true),
 
   // Cannons: c = up, < = arc left, > = arc right, R = rotating (A to fire)
-  c: (x, y) => cannonFactory(x, y, 0, -7.4, true, false),
-  '<': (x, y) => cannonFactory(x, y, -3.1, -5.6, true, false),
-  '>': (x, y) => cannonFactory(x, y, 3.1, -5.6, true, false),
+  c: (x, y) => cannonFactory(x, y, 0, -8.6, true, false),
+  '<': (x, y) => cannonFactory(x, y, -3.1, -5.8, true, false),
+  '>': (x, y) => cannonFactory(x, y, 3.1, -5.8, true, false),
   R: (x, y) => cannonFactory(x, y, 0, -7.2, false, true),
 
   // Bounce tire
@@ -194,7 +194,7 @@ function cannonFactory(x, y, vx, vy, auto, rotating) {
     },
     launchVec() {
       if (!this.rotating) return [vx, vy];
-      return [Math.sin(this.angle) * 6.4, -Math.cos(this.angle) * 6.4];
+      return [Math.sin(this.angle) * 7.5, -Math.cos(this.angle) * 7.5];
     },
     onTouch(lv) {
       if (this.cooldown > 0) return;
