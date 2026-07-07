@@ -23,14 +23,18 @@ export function makeAnimal(name, x, y) {
       if (this.invuln > 0) this.invuln--;
       if (this.remountCd > 0) this.remountCd--;
       if (this.mounted) return; // controlled via control()
-      // idle / fleeing animal
+      if (this.fleeing) {
+        // run off through everything and despawn past the level edge
+        this.x += this.dir * 2.2;
+        if (this.x < -40 || this.x > lv.pxWidth + 40) this.alive = false;
+        return;
+      }
+      // idle animal
       this.vy = Math.min(this.vy + PHYS.gravity, PHYS.maxFall);
-      if (this.fleeing) this.vx = this.dir * 2.2;
-      else this.vx = 0;
+      this.vx = 0;
       this.move(lv);
-      if (this.fleeing && (this.x < -40 || this.x > lv.pxWidth + 40)) this.alive = false;
       // mount on touch
-      if (!this.fleeing && this.remountCd === 0 && lv.player.riding == null && lv.player.state !== 'dead' &&
+      if (this.remountCd === 0 && lv.player.riding == null && lv.player.state !== 'dead' &&
           overlap(this, lv.player)) {
         this.mounted = true;
         lv.player.riding = this;

@@ -41,6 +41,17 @@ export class Player {
   get cy() { return this.y + this.h / 2; }
   get bottom() { return this.y + this.h; }
 
+  // leave the roll state without letting the taller hitbox embed in the floor
+  unroll(next) {
+    if (this.state === 'roll') {
+      const hRoll = this.h;
+      this.state = next;
+      this.y -= (this.h - hRoll);
+    } else {
+      this.state = next;
+    }
+  }
+
   switchHero() {
     if (this.lv.game.run.heroesAlive < 2 || this.state === 'dead' || this.riding) return;
     this.hero = this.hero === HERO.BRUNO ? HERO.PIP : HERO.BRUNO;
@@ -66,7 +77,7 @@ export class Player {
       this.hero = this.hero === HERO.BRUNO ? HERO.PIP : HERO.BRUNO;
       run.activeHero = this.hero;
       this.invuln = PHYS.hurtInvuln;
-      this.state = this.inWater() ? 'swim' : 'air';
+      this.unroll(this.inWater() ? 'swim' : 'air');
       this.vy = -2.5; this.vx = -this.facing * 1.2;
       this.stunT = 18;
       sfx.hurt();
@@ -131,7 +142,7 @@ export class Player {
 
     const water = this.inWater();
     if (water && this.state !== 'swim') {
-      this.state = 'swim'; this.vy = Math.min(this.vy, 1); sfx.splash();
+      this.unroll('swim'); this.vy = Math.min(this.vy, 1); sfx.splash();
       if (this.carrying) this.dropBarrel();
     } else if (!water && this.state === 'swim') {
       this.state = 'air';
@@ -189,7 +200,9 @@ export class Player {
         if (barrel) {
           this.carrying = barrel; barrel.held = true;
         } else {
+          const hFull = this.h;
           this.state = 'roll';
+          this.y += (hFull - this.h); // keep feet planted as the hitbox shrinks
           this.rollT = PHYS.rollFrames;
           this.vx = PHYS.rollSpeed * this.facing;
           sfx.roll();
@@ -224,7 +237,7 @@ export class Player {
       this.rollAirJump = true;
     }
     if (input.pressed(BTN.A) && (this.grounded || this.rollAirJump)) {
-      this.state = 'air';
+      this.unroll('air');
       this.vy = PHYS.jumpVel;
       this.jumpHold = 16;
       this.rollAirJump = false;
@@ -233,7 +246,7 @@ export class Player {
       return;
     }
     if (this.state !== 'dead' && (this.rollT <= 0 || Math.abs(this.vx) < 0.2)) {
-      this.state = this.grounded ? 'ground' : 'air';
+      this.unroll(this.grounded ? 'ground' : 'air');
       this.rollCd = PHYS.rollCooldown;
     }
   }

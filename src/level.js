@@ -337,8 +337,10 @@ export class Level {
         if (e.armored && !isBruno) {
           // Pip bounces off the Bruiser, no harm done
           p.vx = -p.facing * 2.4;
-          p.state = 'air'; p.vy = -1.5;
+          p.unroll('air');
+          p.vy = -1.5;
           p.rollT = 0;
+          p.invuln = Math.max(p.invuln, 20);
           sfx.land();
           continue;
         }
